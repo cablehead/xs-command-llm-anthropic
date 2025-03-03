@@ -1,3 +1,4 @@
+TODO: make document caching optional
 
 ```
 key | .append ANTHROPIC_API_KEY
