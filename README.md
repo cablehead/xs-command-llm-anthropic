@@ -23,3 +23,18 @@ Adhoc request: translate the current clipboard to english
     llm.call
     )
 ```
+
+
+View outstanding calls:
+
+
+```
+.cat | where topic in ["llm.call" "llm.error" "llm.response"] | reduce --fold {} {|frame acc|
+     if $frame.topic == "llm.call" {
+       return ($acc | insert $frame.id "pending")
+     }
+
+     $acc | upsert $frame.meta.frame_id ($frame | reject meta)
+
+   }
+```

@@ -176,6 +176,10 @@ def .call [ids --with-tools] {
 }
 
 {
+  return_options: {
+    ttl: "ephemeral"
+  }
+
   process: {|frame|
     $env.ANTHROPIC_API_KEY = .head ANTHROPIC_API_KEY | .cas $in.hash
     .call $frame.id | tee {
