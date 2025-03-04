@@ -66,25 +66,26 @@ def thecall [] {
       insert "anthropic-beta" "computer-use-2024-10-22"
     }
 
-    try {
-      return (
-        http post
-        --content-type application/json
-        -H $headers
-        https://api.anthropic.com/v1/messages
-        $data
-      )
-    } catch {|err|
-      let response = (
-        http post
-        --content-type application/json
-        -f -e
-        -H $headers
-        https://api.anthropic.com/v1/messages
-        $data | table -e | to text
-      )
-      error make {msg: $response}
-    }
+    (
+      http post
+      --content-type application/json
+      -H $headers
+      https://api.anthropic.com/v1/messages
+      $data
+    )
+
+    # try {
+    # } catch {|err|
+    # let response = (
+    # http post
+    # --content-type application/json
+    # -f -e
+    # -H $headers
+    # https://api.anthropic.com/v1/messages
+    # $data | table -e | to text
+    # )
+    # error make {msg: $response}
+    # }
   }
 }
 
