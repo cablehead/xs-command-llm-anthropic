@@ -66,6 +66,8 @@ def thecall [] {
       insert "anthropic-beta" "computer-use-2024-10-22"
     }
 
+    # try {
+
     (
       http post
       --content-type application/json
@@ -74,7 +76,6 @@ def thecall [] {
       $data
     )
 
-    # try {
     # } catch {|err|
     # let response = (
     # http post
@@ -160,15 +161,23 @@ def id-to-messages [ids] {
   $messages
 }
 
-const computer_tools = [
+const computer_tools = {
+  "claude-3-5-sonnet-20241022" : [
   {type: "text_editor_20241022" name: "str_replace_editor"}
   {type: "bash_20241022" name: "bash"}
 ]
 
+  "claude-3-7-sonnet-20250219" : [
+  {type: "text_editor_20250124" name: "str_replace_editor"}
+  {type: "bash_20250124" name: "bash"}
+]
+}
+
 def .call [ids --with-tools] {
+  let model = "claude-3-7-sonnet-20250219"
   id-to-messages $ids | if ($in | is-empty) { error make {msg: "No messages found"} } else {
     reject id
-    | do (thecall) "claude-3-7-sonnet-20250219" (if $with_tools { $computer_tools })
+    | do (thecall) $model (if $with_tools { $computer_tools | get $model })
     | lines
     | each {|line| $line | split row -n 2 "data: " | get 1? }
     | each {|x| $x | from json }
@@ -182,7 +191,8 @@ def .call [ids --with-tools] {
 
   process: {|frame|
     $env.ANTHROPIC_API_KEY = .head ANTHROPIC_API_KEY | .cas $in.hash
-    .call $frame.id | tee {
+    let with_tools = ($frame | get meta?.with_tools? | default false)
+    .call $frame.id --with-tools=($with_tools) | tee {
       theagg | do {
         let x = $in
         $x | get message.content | to json -r | .append llm.response --meta (
