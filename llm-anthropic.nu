@@ -31,7 +31,7 @@ export def stream-response [call_id: string] {
         )
         next: true
       }
-      {topic: "llm.response"} => {out: (.cas $frame.hash)}
+      {topic: "llm.response"} => {out: ($frame | insert "response" (.cas $frame.hash | from json))}
       _ => {next: true}
     }
   } | compact
