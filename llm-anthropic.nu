@@ -3,38 +3,47 @@ export def stream-response [call_id: string] {
     if $frame.meta?.frame_id? != $call_id { return {next: true} }
     match $frame {
       {topic: "llm.recv"} => {
-        out: (
-          .cas $frame.hash | from json | each {|chunk|
-            match $chunk.type {
-              "message_start" => $"($chunk | get message.model) ($chunk | get message.usage | to yaml | lines | str join ' ')\n"
-              "content_block_start" => (
-                match $chunk.content_block.type {
-                  "text" => $"text: "
-                  "tool_use" => $"tool-use: "
-                  _ => ( error make {msg: $"TODO: ($chunk)"})
-                }
-              )
-              "content_block_delta" => (
-                match $chunk.delta.type {
-                  "text_delta" => $chunk.delta.text
-                  "input_json_delta" => $chunk.delta.partial_json
-                  _ => ( error make {msg: $"TODO: ($chunk)"})
-                }
-              )
-              "content_block_stop" => "\n"
-              "message_delta" => null
-              "message_stop" => null
-              "ping" => null
-              _ => $"\n($chunk.type)\n"
-            }
+        .cas $frame.hash | from json | each {|chunk|
+          match $chunk.type {
+            "message_start" => null
+            "content_block_start" => (
+              match $chunk.content_block.type {
+                "text" => $"text: "
+                "tool_use" => $"tool-use::($chunk.content_block.name) "
+                _ => ( error make {msg: $"TODO: ($chunk)"})
+              }
+            )
+            "content_block_delta" => (
+              match $chunk.delta.type {
+                "text_delta" => $chunk.delta.text
+                "input_json_delta" => $chunk.delta.partial_json
+                _ => ( error make {msg: $"TODO: ($chunk)"})
+              }
+            )
+            "content_block_stop" => "\n"
+            "message_delta" => null
+            "message_stop" => null
+            "ping" => null
+            _ => $"\n($chunk.type)\n"
           }
-        )
-        next: true
+        } | if $in != null { print -n $in }
+        {next: true}
       }
-      {topic: "llm.response"} => {out: ($frame | insert "response" (.cas $frame.hash | from json))}
+
+      {topic: "llm.response"} => {
+        print ($frame | select topic meta.message.model meta.message.usage meta.message.stop_reason | table -e)
+        match $frame.meta.message.stop_reason {
+          "tool_use" => {
+            print (.cas $frame.hash | from json | where type == "tool_use" | select name input | table -e)
+          }
+          _ => ( error make {msg: $"TODO: ($frame | table -e)"})
+        }
+        return {}
+      }
+
       _ => {next: true}
     }
-  } | compact
+  }
 }
 
 export def .llm [ --with-tools] {
