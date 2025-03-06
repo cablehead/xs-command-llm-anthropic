@@ -39,6 +39,9 @@ export def stream-response [call_id: string] {
             if (["yes" "no"] | input list) != "yes" { return {} }
             print "let's go"
           }
+
+          "end_turn" => null
+
           _ => ( error make {msg: $"TODO: ($frame | table -e)"})
         }
         return {}
@@ -49,8 +52,10 @@ export def stream-response [call_id: string] {
   }
 }
 
-export def .llm [ --with-tools] {
-  let frame = .append llm.call --meta {with_tools: $with_tools}
+export def .llm [ids? --with-tools] {
+  let content = $in
+  let meta = {with_tools: $with_tools} | if $ids != null { insert continues $ids } else { $in }
+  let frame = $content | .append llm.call --meta $meta
   print ($frame | ept)
   .cat --last-id $frame.id -f | stream-response $frame.id
 }
