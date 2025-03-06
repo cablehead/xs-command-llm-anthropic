@@ -6,15 +6,24 @@ export def stream-response [call_id: string] {
         out: (
           .cas $frame.hash | from json | each {|chunk|
             match $chunk.type {
-              "message_start" => $"($call_id) response-start ($chunk | get message.model) ($chunk | get message.usage | to yaml | lines | str join ' ')\n"
+              "message_start" => $"($chunk | get message.model) ($chunk | get message.usage | to yaml | lines | str join ' ')\n"
               "content_block_start" => (
                 match $chunk.content_block.type {
-                  "text" => $"($call_id) text:"
-                  "tool_use" => $"($call_id) tool_use:"
-                  _ => (make error {msg: $"TODO: ($chunk)"})
+                  "text" => $"text: "
+                  "tool_use" => $"tool-use: "
+                  _ => ( error make {msg: $"TODO: ($chunk)"})
+                }
+              )
+              "content_block_delta" => (
+                match $chunk.delta.type {
+                  "text_delta" => $chunk.delta.text
+                  "input_json_delta" => $chunk.delta.partial_json
+                  _ => ( error make {msg: $"TODO: ($chunk)"})
                 }
               )
               "content_block_stop" => "\n"
+              "message_delta" => null
+              "message_stop" => null
               "ping" => null
               _ => $"\n($chunk.type)\n"
             }
