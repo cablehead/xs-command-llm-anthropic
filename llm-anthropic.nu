@@ -34,7 +34,10 @@ export def stream-response [call_id: string] {
         print ($frame | select topic meta.message.model meta.message.usage meta.message.stop_reason | table -e)
         match $frame.meta.message.stop_reason {
           "tool_use" => {
+            print "Execute the following tool use:"
             print (.cas $frame.hash | from json | where type == "tool_use" | select name input | table -e)
+            if (["yes" "no"] | input list) != "yes" { return {} }
+            print "let's go"
           }
           _ => ( error make {msg: $"TODO: ($frame | table -e)"})
         }
