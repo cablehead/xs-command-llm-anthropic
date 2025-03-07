@@ -52,8 +52,13 @@ export def stream-response [call_id: string] {
   }
 }
 
-export def .llm [ids? --with-tools] {
+export def .llm [
+  ids?
+  --with-tools
+  --respond (-r)
+] {
   let content = $in
+  let ids = if $respond { $ids | append (.head llm.response).id } else { $ids }
   let meta = {with_tools: $with_tools} | if $ids != null { insert continues $ids } else { $in }
   let frame = $content | .append llm.call --meta $meta
   print ($frame | ept)
