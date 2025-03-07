@@ -64,3 +64,25 @@ export def .llm [
   print ($frame | ept)
   .cat --last-id $frame.id -f | stream-response $frame.id
 }
+
+export def run-tool [] {
+  let tool = $in
+
+  let resp = (
+    match $tool.name {
+      "str_replace_editor" => ($tool | str_replace_editor)
+      "bash" => {
+        if ("resp" | path exists) {
+          {content: (cat resp)}
+        } else {
+          {content: (bash -c ($tool.input.command | str replace -r '^/repo' (pwd)) o+e>| complete | get stdout)}
+        }
+      }
+    }
+  )
+
+  {
+    type: "tool_result"
+    tool_use_id: $tool.id
+  } | merge $resp
+}
