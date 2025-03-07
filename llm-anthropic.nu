@@ -8,8 +8,8 @@ export def stream-response [call_id: string] {
             "message_start" => null
             "content_block_start" => (
               match $chunk.content_block.type {
-                "text" => $"text: "
-                "tool_use" => $"tool-use::($chunk.content_block.name) "
+                "text" => $"Text:\n"
+                "tool_use" => $"Tool-Use::($chunk.content_block.name)\n"
                 _ => ( error make {msg: $"TODO: ($chunk)"})
               }
             )
@@ -31,38 +31,42 @@ export def stream-response [call_id: string] {
       }
 
       {topic: "llm.response"} => {
-        print ($frame | select topic meta.message.model meta.message.usage meta.message.stop_reason | table -e)
-        match $frame.meta.message.stop_reason {
-          "tool_use" => {
-            print "Execute the following tool use:"
-            print (.cas $frame.hash | from json | where type == "tool_use" | select name input | table -e)
-            if (["yes" "no"] | input list) != "yes" { return {} }
-            print "let's go"
-          }
-
-          "end_turn" => null
-
-          _ => ( error make {msg: $"TODO: ($frame | table -e)"})
-        }
-        return {}
+        return {out: $frame}
       }
 
       _ => {next: true}
     }
-  }
+  } | first
 }
 
 export def .llm [
   ids?
   --with-tools
   --respond (-r)
+  --json (-j)
 ] {
   let content = $in
   let ids = if $respond { $ids | append (.head llm.response).id } else { $ids }
-  let meta = {with_tools: $with_tools} | if $ids != null { insert continues $ids } else { $in }
+  let meta = {with_tools: $with_tools} | if $ids != null { insert continues $ids } else { $in } | if $json { insert mime_type "application/json" } else { $in }
   let frame = $content | .append llm.call --meta $meta
-  print ($frame | ept)
-  .cat --last-id $frame.id -f | stream-response $frame.id
+  let response = .cat --last-id $frame.id -f | stream-response $frame.id
+  process-response $response
+}
+
+export def process-response [frame: record --yes (-y)] {
+  match $frame.meta.message.stop_reason {
+    "tool_use" => {
+      let todo = .cas $frame.hash | from json | where type == "tool_use"
+      print "Execute the following tool use:\n"
+      print ($todo | select name input | table -e)
+      if not $yes {
+        if (["yes" "no"] | input list) != "yes" { return {} }
+      }
+      $todo | each { run-tool } | to json -r | .llm $frame.id --with-tools --json
+    }
+    "end_turn" => null
+    _ => ( error make {msg: $"TODO: ($frame | table -e)"})
+  }
 }
 
 export def run-tool [] {
