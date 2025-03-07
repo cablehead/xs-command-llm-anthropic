@@ -20,7 +20,7 @@ export def stream-response [call_id: string] {
                 _ => ( error make {msg: $"TODO: ($chunk)"})
               }
             )
-            "content_block_stop" => "\n"
+            "content_block_stop" => "\n\n"
             "message_delta" => null
             "message_stop" => null
             "ping" => null
@@ -62,7 +62,9 @@ export def process-response [frame: record --yes (-y)] {
       if not $yes {
         if (["yes" "no"] | input list) != "yes" { return {} }
       }
-      $todo | each { run-tool } | to json -r | .llm $frame.id --with-tools --json
+      let result = $todo | each { run-tool }
+      print ($result | table -e)
+      $result | to json -r | .llm $frame.id --with-tools --json
     }
     "end_turn" => null
     _ => ( error make {msg: $"TODO: ($frame | table -e)"})
