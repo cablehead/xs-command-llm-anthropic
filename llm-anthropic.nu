@@ -71,6 +71,10 @@ export def process-response [frame: record --yes (-y)] {
   }
 }
 
+def str_replace_editor [] {
+  select input | update input.path { str replace -r '^/repo' (pwd) } | to json -r | anthropic-text-editor --json | from json
+}
+
 export def run-tool [] {
   let tool = $in
 
