@@ -189,7 +189,7 @@ def .call [ids --with-tools] {
     ttl: "ephemeral"
   }
 
-  process: {|frame|
+  run: {|frame|
     $env.ANTHROPIC_API_KEY = .head ANTHROPIC_API_KEY | .cas $in.hash
     let with_tools = ($frame | get meta?.with_tools? | default false)
     .call $frame.id --with-tools=($with_tools) | tee {
