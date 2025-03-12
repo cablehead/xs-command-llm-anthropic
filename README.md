@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/0e737663-f8cd-42cc-a666-a410226d9b52)
+
+
 ## Requirements
 
 - [anthropic-text-editor](https://github.com/cablehead/anthropic-text-editor):
