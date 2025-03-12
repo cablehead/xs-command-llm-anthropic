@@ -36,21 +36,7 @@ You're ready to go!
 
 Todo:
 
-- docstrings for the exported commands
-
-```nushell
-help llm
-```
-
-- llm init-store: prepares a cross stream store for use with this tool
-
-```
-key | .append ANTHROPIC_API_KEY
-cat xs-command-llm-anthropic.nu | .append llm.define
-"hi" | .append llm.call
-```
-
-- llm run llm.call independent of a store
+- document how to run llm.call without registering it
 
 ```
 let c = source xs-command-llm.call-anthropic.nu ; do $c.process ("hi" | .append go)
