@@ -5,7 +5,7 @@ Quick start with the `llm` module:
 1. **Load the module overlay**:
 
 ```nushell
-overlay use ./llm
+overlay use -p ./llm
 help llm
 ```
 
