@@ -1,4 +1,13 @@
-TODO: make document caching optional
+Features:
+
+- rich documents(??)
+- prompt cache (to be fleshed out) TODO: make document caching optional
+
+Todo:
+
+- llm store-init: prepares a cross stream store for use with this tool
+
+- llm run llm.call independent of a store
 
 ```
 key | .append ANTHROPIC_API_KEY
