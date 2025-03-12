@@ -40,7 +40,7 @@ You're ready to go!
 - rich documents(??)
 - prompt caching (to be fleshed out) TODO: make document caching optional
 
-## Todo
+## To document
 
 - document how to run llm.call without registering it
 
