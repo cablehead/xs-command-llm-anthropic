@@ -12,14 +12,16 @@ help llm
 2. **Initialize your API key and register the cross.stream command**:
 
 ```nushell
-$ $env.ANTHROPIC_API_KEY | llm init-store
-03djkh6yv2xb68h4ubhhqhwo7
+$env.ANTHROPIC_API_KEY | llm init-store
 ```
 
 3. **Make a test call**:
 
 ```nushell
-$ llm call
+llm call
+```
+
+```
 Enter prompt: hola
 Text:
 ¡Hola! ¿En qué puedo ayudarte hoy?
