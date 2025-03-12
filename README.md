@@ -1,4 +1,9 @@
-Features:
+## Onboarding
+
+- overlay use ./llm
+
+
+## Features
 
 - rich documents(??)
 - prompt caching (to be fleshed out) TODO: make document caching optional
