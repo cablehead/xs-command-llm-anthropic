@@ -13,13 +13,23 @@ use harness.nu *
 #   "Tell me about quantum computing" | llm call
 #   "what's does the repo do?" | llm call --with-tools
 #   "Continue our discussion" | llm call --respond
+#   ["Document 1", "Document 2"] | llm call  # Automatically joins list of strings
 export def call [
   ids?: list<string> # Previous message IDs to continue a conversation
   --with-tools # Enable Claude to use tools (bash and text editor)
   --respond (-r) # Continue from the last response
   --json (-j) # Treat input as JSON formatted content
+  --separator (-s): string = "\n\n---\n\n" # Separator used when joining lists of strings
 ]: any -> record {
-  let content = if $in == null { input "Enter prompt: " } else { }
+  # Check if input is a list of strings and join them with the separator if it is
+  let content = if $in == null {
+    input "Enter prompt: "
+  } else if ($in | describe) == "list<string>" {
+    $in | str join $separator
+  } else {
+    $in
+  }
+
   let ids = if $respond { $ids | append (.head llm.response).id } else { $ids }
   let meta = {with_tools: $with_tools} | if $ids != null { insert continues $ids } else { $in } | if $json { insert mime_type "application/json" } else { $in }
   let req = $content | .append llm.call --meta $meta
