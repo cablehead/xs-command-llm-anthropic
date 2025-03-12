@@ -1,3 +1,9 @@
+## Requirements
+
+- [anthropic-text-editor](https://github.com/cablehead/anthropic-text-editor):
+  A micro-CLI to apply tool calls from Anthropic for their text_editor_20250124
+  built-in computer use tool
+
 ## Onboarding
 
 Quick start with the `llm` module:
