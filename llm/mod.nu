@@ -18,7 +18,7 @@ export def call [
   --with-tools # Enable Claude to use tools (bash and text editor)
   --respond (-r) # Continue from the last response
   --json (-j) # Treat input as JSON formatted content
-]: string -> record {
+]: any -> record {
   let content = if $in == null { input "Enter prompt: " } else { }
   let ids = if $respond { $ids | append (.head llm.response).id } else { $ids }
   let meta = {with_tools: $with_tools} | if $ids != null { insert continues $ids } else { $in } | if $json { insert mime_type "application/json" } else { $in }
