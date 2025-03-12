@@ -11,7 +11,7 @@ conversations with Claude that can be integrated into your terminal workflow.
 
 ## Requirements
 
-- [anthropic-text-editor](https://github.com/cablehead/anthropic-text-editor):
+- [anthropic-text-editor](https://github.com/cablehead/anthropic-text-editor) (for the --with-tools option):
   A micro-CLI to apply tool calls from Anthropic for their [text_editor_20250124](https://docs.anthropic.com/en/docs/agents-and-tools/computer-use)
   built-in computer use tool
 
