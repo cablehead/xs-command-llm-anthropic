@@ -12,7 +12,7 @@ conversations with Claude that can be integrated into your terminal workflow.
 ## Requirements
 
 - [anthropic-text-editor](https://github.com/cablehead/anthropic-text-editor):
-  A micro-CLI to apply tool calls from Anthropic for their text_editor_20250124
+  A micro-CLI to apply tool calls from Anthropic for their [text_editor_20250124](https://docs.anthropic.com/en/docs/agents-and-tools/computer-use)
   built-in computer use tool
 
 ## Onboarding
@@ -48,8 +48,11 @@ You're ready to go!
 
 ## Features
 
-- rich documents(??)
-- prompt caching (to be fleshed out) TODO: make document caching optional
+- An interactive harness for processing [Claude's built-in `bash_20250124` and
+  `text_editor_20250124`
+  tools](https://docs.anthropic.com/en/docs/agents-and-tools/computer-use)
+- Rich documents, e.g. pdfs
+- Prompt caching for rich documents (to be fleshed out) TODO: make document caching optional: enable caching for all content types
 
 ## To document
 
