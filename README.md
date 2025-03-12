@@ -1,6 +1,9 @@
 ## Onboarding
 
-- overlay use ./llm
+```nushell
+overlay use ./llm
+help llm
+```
 
 
 ## Features
@@ -9,6 +12,12 @@
 - prompt caching (to be fleshed out) TODO: make document caching optional
 
 Todo:
+
+- docstrings for the exported commands
+
+```nushell
+help llm
+```
 
 - llm init-store: prepares a cross stream store for use with this tool
 
