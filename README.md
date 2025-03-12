@@ -1,11 +1,11 @@
 Features:
 
 - rich documents(??)
-- prompt cache (to be fleshed out) TODO: make document caching optional
+- prompt caching (to be fleshed out) TODO: make document caching optional
 
 Todo:
 
-- llm store-init: prepares a cross stream store for use with this tool
+- llm init-store: prepares a cross stream store for use with this tool
 
 ```
 key | .append ANTHROPIC_API_KEY
