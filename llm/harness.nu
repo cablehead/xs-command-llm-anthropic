@@ -52,11 +52,18 @@ export def process-response [frame: record --yes (-y)] {
       }
       let result = $todo | each { run-tool }
       print ($result | table -e)
-      $result | to json -r | .llm $frame.id --with-tools --json
+
+      let req = $result | to json -r | .append llm.call --meta {continues: [$frame.id], with_tools: true, mime_type: "application/json"}
+      follow-response $req
     }
     "end_turn" => null
     _ => ( error make {msg: $"TODO: ($frame | table -e)"})
   }
+}
+
+export def follow-response [req: record] {
+  let response = .cat --last-id $req.id -f | stream-response $req.id
+  process-response $response
 }
 
 def str_replace_editor [] {
