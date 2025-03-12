@@ -1,3 +1,11 @@
+# xs-command-llm-anthropic
+
+A [cross.stream](https://github.com/cablehead/xs)
+[command](https://cablehead.github.io/xs/reference/commands/) and Nushell
+module for interacting with Anthropic's Claude AI models. This add-on leverages
+cross.stream's event-sourced architecture to provide persistent, stateful
+conversations with Claude that can be integrated into your terminal workflow.
+
 ![image](https://github.com/user-attachments/assets/0e737663-f8cd-42cc-a666-a410226d9b52)
 
 
@@ -18,7 +26,7 @@ overlay use -p ./llm
 help llm
 ```
 
-2. **Initialize your API key and register the cross.stream command**:
+2. **Initialize your API key and register the [cross.stream](https://github.com/cablehead/xs) [command](https://cablehead.github.io/xs/reference/commands/)**:
 
 ```nushell
 $env.ANTHROPIC_API_KEY | llm init-store
@@ -92,7 +100,7 @@ View outstanding calls:
 sequenceDiagram
     participant User
     participant CLI as llm-anthropic.nu CLI
-    participant Store as cross.stream Store
+    participant Store as [cross.stream](https://github.com/cablehead/xs) Store
     participant Command as llm.call Command
     participant API as Anthropic API
 
@@ -128,7 +136,7 @@ sequenceDiagram
 
 ## Why Use This Approach
 
-The cross.stream framework offers significant advantages over traditional AI
+The [cross.stream](https://github.com/cablehead/xs) framework offers significant advantages over traditional AI
 integration approaches:
 
 ### Event-Sourced Architecture
@@ -142,11 +150,11 @@ powerful capabilities:
   discussions from previous messages
 - **Resilience:** Interrupted responses retain all partial data
 - **Asynchronous Processing:** LLM calls run independently in the background,
-  managed by the cross.stream process
+  managed by the [cross.stream](https://github.com/cablehead/xs) process
 
 ### Command-Based Integration
 
-By registering `llm.call` as a cross.stream command:
+By registering `llm.call` as a [cross.stream command](https://cablehead.github.io/xs/reference/commands/):
 
 - Operations run independently of client processes
 - State is managed through the event stream rather than memory

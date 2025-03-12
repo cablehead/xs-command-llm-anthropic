@@ -15,7 +15,7 @@ use harness.nu *
 #   "Continue our discussion" | llm call --respond
 #   ["Document 1", "Document 2"] | llm call  # Automatically joins list of strings
 export def call [
-  ids?: list<string> # Previous message IDs to continue a conversation
+  ids?: any # Previous message IDs to continue a conversation
   --with-tools # Enable Claude to use tools (bash and text editor)
   --respond (-r) # Continue from the last response
   --json (-j) # Treat input as JSON formatted content
