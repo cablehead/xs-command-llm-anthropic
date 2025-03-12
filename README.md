@@ -7,13 +7,21 @@ Todo:
 
 - llm store-init: prepares a cross stream store for use with this tool
 
+```
+key | .append ANTHROPIC_API_KEY
+cat xs-command-llm-anthropic.nu | .append llm.define
+"hi" | .append llm.call
+```
+
 - llm run llm.call independent of a store
 
 ```
-key | .append ANTHROPIC_API_KEY
 let c = source xs-command-llm.call-anthropic.nu ; do $c.process ("hi" | .append go)
-cat xs-command-llm-anthropic.nu | .append llm.define
-"hi" | .append llm.call
+```
+
+- Working with the response
+
+```
 .cat | where topic == "llm.response" | last | .cas | from json
 ```
 
