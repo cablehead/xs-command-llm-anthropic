@@ -51,7 +51,7 @@ let c = source xs-command-llm.call-anthropic.nu ; do $c.process ("hi" | .append 
 - Working with the response
 
 ```
-.cat | where topic == "llm.response" | last | .cas | from json
+.head llm.response | .cas | from json
 ```
 
 Adhoc request: translate the current clipboard to english
