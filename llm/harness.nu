@@ -1,5 +1,3 @@
-use chat-chain.nu *
-
 export def stream-response [call_id: string] {
   generate {|frame cont = false|
     if $frame.meta?.frame_id? != $call_id { return {next: true} }

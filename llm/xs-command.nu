@@ -50,13 +50,19 @@ def theagg [] {
 
 def thecall [] {
   {|model: string, tools?: list|
+    # anthropic only supports a single system message as a top level attribute
+    let messages = $in
+    let system_messages = $messages | where role == "system"
+    let messages = $messages | where role != "system"
+
     let data = {
       model: $model
       max_tokens: 8192
       stream: true
-      # TODO: anthropic only supports a single system message as a top level attribute
-      messages: ($in | update role {|x| if $x.role == "system" { "user" } else { $x.role } })
+      messages: $messages
       tools: ($tools | default [])
+    } | conditional-pipe ($system_messages | is-not-empty) {
+      insert "system" ($system_messages | get content | str join "\n\n---\n\n")
     }
 
     let headers = {

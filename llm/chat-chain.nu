@@ -46,7 +46,7 @@ def traverse-thread [id: string] {
   } {stack: [$id] chain: []} | last
 }
 
-def id-to-messages [ids] {
+export def id-to-messages [ids] {
   mut messages = []
   mut stack = [] | append $ids
 

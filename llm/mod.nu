@@ -5,6 +5,7 @@
 #
 # See README.md for more detailed examples and usage patterns.
 
+use chat-chain.nu
 use harness.nu *
 
 # Sends a prompt to the LLM and retrieves the response
@@ -59,4 +60,9 @@ export def init-store []: string -> string {
   const base = (path self) | path dirname
   let snippets = [chat-chain.nu xs-command.nu] | each {|x| $base | path join $x }
   cat ...$snippets | .append llm.define | get id
+}
+
+export def thread [ids?] {
+  let ids = if ($ids | is-empty) { (.head llm.response).id } else { $ids }
+  chat-chain id-to-messages $ids
 }
