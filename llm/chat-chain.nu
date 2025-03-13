@@ -1,4 +1,4 @@
-def frame-to-message [frame: record] {
+export def frame-to-message [frame: record] {
   let meta = $frame | get meta? | default {}
   let role = $meta | default "user" role | get role
 
@@ -21,7 +21,14 @@ def frame-to-message [frame: record] {
     } else if (($meta | get mime_type?) == "application/json") {
       $content | from json
     } else {
-      $content
+      [
+        (
+          {type: "text" text: $content}
+          | if ($frame.meta?.cache? | default false) {
+            insert cache_control {type: "ephemeral"}
+          } else { }
+        )
+      ]
     }
   )
 

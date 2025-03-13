@@ -62,7 +62,7 @@ def thecall [] {
       messages: $messages
       tools: ($tools | default [])
     } | conditional-pipe ($system_messages | is-not-empty) {
-      insert "system" ($system_messages | get content | str join "\n\n---\n\n")
+      insert "system" ($system_messages | get content | flatten)
     }
 
     let headers = {

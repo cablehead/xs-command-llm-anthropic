@@ -18,6 +18,7 @@ use harness.nu *
 export def call [
   ids?: any # Previous message IDs to continue a conversation
   --with-tools # Enable Claude to use tools (bash and text editor)
+  --cache # Enables caching from this point back through previous messages
   --respond (-r) # Continue from the last response
   --json (-j) # Treat input as JSON formatted content
   --separator (-s): string = "\n\n---\n\n" # Separator used when joining lists of strings
@@ -32,7 +33,12 @@ export def call [
   }
 
   let ids = if $respond { $ids | append (.head llm.response).id } else { $ids }
-  let meta = {with_tools: $with_tools} | if $ids != null { insert continues $ids } else { $in } | if $json { insert mime_type "application/json" } else { $in }
+  let meta = (
+    {}
+    | if $with_tools { insert with_tools true } else { }
+    | if $ids != null { insert continues $ids } else { }
+    | if $json { insert mime_type "application/json" } else { }
+  )
   let req = $content | .append llm.call --meta $meta
   follow-response $req
 }

@@ -53,7 +53,7 @@ You're ready to go!
   `text_editor_20250124`
   tools](https://docs.anthropic.com/en/docs/agents-and-tools/computer-use)
 - Rich documents, e.g. pdfs
-- Prompt caching for rich documents (to be fleshed out) TODO: make document caching optional: enable caching for all content types
+- Message caching: control which messages are cached using the `--cache` flag
 
 ## To document
 
@@ -85,6 +85,18 @@ Adhoc request: translate the current clipboard to english
     )
 ```
 
+Using the cache flag with large documents or inputs:
+
+```
+# Load a large document and process it with caching enabled
+open large_document.pdf | llm call --cache
+llm call "Summarize the key points from the document"
+
+# The document content is marked as ephemeral in Claude's context
+# This reduces token usage in subsequent exchanges
+# while still allowing Claude to reference the semantic content
+```
+
 View outstanding calls:
 
 ```
@@ -99,6 +111,16 @@ View outstanding calls:
 ```
 
 ## Reference
+
+### Command Options
+
+The `llm call` command supports the following options:
+
+- `--with-tools`: Enable Claude to use bash and text editor tools
+- `--cache`: Mark messages as ephemeral, which prevents them from being used in subsequent responses. This is useful for excluding context-heavy content (like large documents) from being re-tokenized in future exchanges while preserving the semantic understanding from those messages.
+- `--respond (-r)`: Continue from the last response
+- `--json (-j)`: Treat input as JSON formatted content
+- `--separator (-s)`: Specify a custom separator when joining lists of strings (default: "\n\n---\n\n")
 
 ```mermaid
 sequenceDiagram
