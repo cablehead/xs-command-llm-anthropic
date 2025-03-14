@@ -38,6 +38,7 @@ export def call [
     | if $with_tools { insert with_tools true } else { }
     | if $ids != null { insert continues $ids } else { }
     | if $json { insert mime_type "application/json" } else { }
+    | if $cache { insert cache true } else { }
   )
   let req = $content | .append llm.call --meta $meta
   follow-response $req
