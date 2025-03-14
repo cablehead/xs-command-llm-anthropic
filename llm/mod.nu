@@ -8,6 +8,9 @@
 use chat-chain.nu
 use harness.nu *
 
+export use harness.nu process-response
+
+
 # Sends a prompt to the LLM and retrieves the response
 #
 # Examples:
